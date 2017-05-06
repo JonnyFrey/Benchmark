@@ -2,8 +2,6 @@ package benchmark.sort;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Test that {@link SelectionSort} is valid
  */

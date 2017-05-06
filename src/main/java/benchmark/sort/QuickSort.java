@@ -1,11 +1,11 @@
 package benchmark.sort;
 
 /**
- * <a href="https://en.wikipedia.org/wiki/Quicksort">Quick sort implememntation</a>
+ * <a href="https://en.wikipedia.org/wiki/Quicksort">Quick sort implementation</a>
  */
-public class QuickSort implements Sort {
+class QuickSort implements Sort {
     @Override
     public void sort(final int[] sort) {
-        //TODO: implement sorting algorthmn Campos.
+        //TODO: implement sorting algorithm Campos.
     }
 }

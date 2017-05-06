@@ -10,14 +10,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Optional;
 
-import static benchmark.cli.PositiveNumberValidator.parsePositveNumber;
+import static benchmark.cli.PositiveNumberValidator.parsePositiveNumber;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
  * The code that runs when a component that is using this object has an action called to it. For example, when you push
  * a button a the GUI that has this add to it's Action listener's then the actionPerformed method is called. This runs
- * the current selected sorting algorthmn a certain amount of time to get an average of how long it would take to sort a
+ * the current selected sorting algorithm a certain amount of time to get an average of how long it would take to sort a
  * certain sized array of integers.
  */
 @AllArgsConstructor
@@ -32,7 +32,7 @@ public class RunActionListener implements ActionListener {
     /**
      * {@inheritDoc}
      * <p>
-     * This runs the current selected sorting algorthmn a certain amount of time to get an average of how long it would
+     * This runs the current selected sorting algorithm a certain amount of time to get an average of how long it would
      * take to sort a certain sized array of integers.
      */
     @Override
@@ -41,14 +41,14 @@ public class RunActionListener implements ActionListener {
         final String inputString = this.frame.getArraySizeInput().getText().trim();
         try {
             //Attempt to parse the int
-            final int arraySize = parsePositveNumber(inputString);
+            final int arraySize = parsePositiveNumber(inputString);
 
-            //Attempt to determin which sorting array to use based off of the GUI.
+            //Attempt to determine which sorting array to use based off of the GUI.
             final String sortName = this.frame.getChooseSortMethod().getSelectedItem().toString();
-            final Sort sortingAlgorthm = checkNotNull(
+            final Sort sortingAlgorithm = checkNotNull(
                     Optional.of(Sorts.valueOf(sortName))
                             .orElseThrow(() -> new IllegalStateException(format("Unknown Sorts enum. Found '%s'", sortName)))
-                            .getSortingAlgorthm(),
+                            .getSortingAlgorithm(),
                     "Sorting Algorithm not defined yet"
             );
 
@@ -60,7 +60,7 @@ public class RunActionListener implements ActionListener {
             for (int i = 0; i < numberOfRuns; i++) {
                 fillArrayWithRandomNumbers(array);
                 final long startTime = System.currentTimeMillis();
-                sortingAlgorthm.sort(array);
+                sortingAlgorithm.sort(array);
                 totalTime += System.currentTimeMillis() - startTime;
             }
             final double averageTime = totalTime / numberOfRuns;

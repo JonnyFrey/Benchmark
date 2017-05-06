@@ -19,9 +19,9 @@ public enum Sorts {
     JAVA_ARRAYS_SORT(Arrays::sort);
 
     /**
-     * Sorting algorthmn the enum is associated with.
+     * Sorting algorithm the enum is associated with.
      */
-    private final Sort sortingAlgorthm;
+    private final Sort sortingAlgorithm;
 
 
     /**

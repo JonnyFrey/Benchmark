@@ -18,22 +18,22 @@ public class PositiveNumberValidator implements IParameterValidator {
      */
     @Override
     public void validate(final String name, final String value) throws ParameterException {
-        PositiveNumberValidator.parsePositveNumber(value);
+        PositiveNumberValidator.parsePositiveNumber(value);
     }
 
     /**
-     * Attempts to parse the String into a postive non-zero integer.
+     * Attempts to parse the String into a positive non-zero integer.
      *
      * @param value string to be parsed into an integer.
      * @return the parsed integer.
      * @throws ParameterException if the value is not a positive non-zero integer.
      */
-    public static int parsePositveNumber(final String value) {
+    public static int parsePositiveNumber(final String value) {
         try {
             final int parsedValue = parseInt(value);
             if (parsedValue <= 0) {
                 throw new ParameterException(format(
-                        "Value '%s' must be a postive non-zero integer",
+                        "Value '%s' must be a positive non-zero integer",
                         parsedValue
                 ));
             }

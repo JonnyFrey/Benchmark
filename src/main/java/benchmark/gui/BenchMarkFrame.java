@@ -27,19 +27,19 @@ public class BenchMarkFrame extends JFrame {
     private final JTextField display;
 
     /**
-     * The Combo box that will store which sorting algorthmn to use
+     * The Combo box that will store which sorting algorithm to use
      */
     private final JComboBox<String> chooseSortMethod;
 
     /**
-     * CLI parameters to set inital states of the application if desired.
+     * CLI parameters to set initial states of the application if desired.
      */
     private final CLIParameters parameters;
 
     /**
      * Constructs a GUI for the user to interact with.
      *
-     * @param parameters cli parameters to set the inital defaults within the application.
+     * @param parameters cli parameters to set the initial defaults within the application.
      */
     public BenchMarkFrame(final CLIParameters parameters) {
         super("Benchmark");
@@ -57,7 +57,7 @@ public class BenchMarkFrame extends JFrame {
     }
 
     /**
-     * Takes the the frame and injects the approprate components into it for the users to interact with. This should be
+     * Takes the the frame and injects the appropriate components into it for the users to interact with. This should be
      * called once by the constructor
      */
     private void setupFrame() {

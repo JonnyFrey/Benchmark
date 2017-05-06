@@ -1,15 +1,15 @@
 package benchmark.sort;
 
 /**
- * <a href="https://en.wikipedia.org/wiki/Selection_sort">Selection sort implememntation</a>
+ * <a href="https://en.wikipedia.org/wiki/Selection_sort">Selection sort implementation</a>
  */
-public class SelectionSort implements Sort {
+class SelectionSort implements Sort {
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void sort(final int[] sort) {
-        //TODO: implement sorting algorthmn Campos.
+        //TODO: implement sorting algorithm Campos.
     }
 }

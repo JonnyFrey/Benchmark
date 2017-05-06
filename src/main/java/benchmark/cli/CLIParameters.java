@@ -10,7 +10,7 @@ import lombok.Getter;
 public class CLIParameters {
 
     /**
-     * The number of runs the programs initailly starts with.
+     * The number of runs the programs initially starts with.
      */
     @Parameter(names = {"--run", "-r"}, validateWith = PositiveNumberValidator.class)
     private int numOfRuns = 20;
