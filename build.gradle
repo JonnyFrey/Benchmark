@@ -50,11 +50,6 @@ dependencies {
     integrationTestRuntime sourceSets.integrationTest.output
 }
 
-artifactory {
-    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
-    resolve {
-        repoKey = 'libs-release'
-        username = "${artifactory_user}" // The publisher user name
-        password = "${artifactory_password}" // The publisher password
-    }
+repositories {
+    jcenter()
 }
