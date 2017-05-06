@@ -1,0 +1,60 @@
+plugins {
+    id "com.jfrog.artifactory" version "3.1.0"
+    id 'com.github.johnrengelman.shadow' version '1.2.2'
+    id 'org.unbroken-dome.test-sets' version '1.1.0'
+    id "com.github.samueltbrown.cucumber" version "0.9"
+}
+
+apply plugin: 'java'
+
+apply from: file('gradle/publish.gradle')
+
+version = '0.0.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile 'com.beust:jcommander:1.+'
+    compile 'com.google.code.gson:gson:2.+'
+    compile 'com.google.guava:guava:21.0'
+    compile 'commons-collections:commons-collections:3+'
+    compile 'commons-validator:commons-validator:1.4.0'
+    compile 'org.aeonbits.owner:owner:1+'
+    compile 'org.apache.logging.log4j:log4j-api:2+'
+    compile 'org.apache.logging.log4j:log4j-core:2+'
+    compile "org.projectlombok:lombok:1.16.16"
+
+
+    testCompile 'junit:junit:4.+'
+
+    cucumberRuntime 'info.cukes:cucumber-java:1.2.3'
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'HGData CLI Application', 'Implementation-Version': project.version
+    }
+}
+
+shadowJar {
+    manifest { attributes 'Main-Class': 'com.hgdata.camposSort.Main' }
+    classifier = ''
+}
+
+testSets {
+    integrationTest
+}
+
+dependencies {
+    integrationTestRuntime sourceSets.integrationTest.output
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    resolve {
+        repoKey = 'libs-release'
+        username = "${artifactory_user}" // The publisher user name
+        password = "${artifactory_password}" // The publisher password
+    }
+}
