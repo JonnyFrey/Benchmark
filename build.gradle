@@ -1,13 +1,13 @@
 plugins {
-    id "com.jfrog.artifactory" version "3.1.0"
-    id 'com.github.johnrengelman.shadow' version '1.2.2'
-    id 'org.unbroken-dome.test-sets' version '1.1.0'
-    id "com.github.samueltbrown.cucumber" version "0.9"
+    id 'com.github.johnrengelman.shadow' version '1.2.4'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
 }
 
 apply plugin: 'java'
-
-apply from: file('gradle/publish.gradle')
 
 version = '0.0.0'
 
@@ -15,41 +15,33 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
+    compile 'org.slick2d:slick2d-core:1.0.2'
+
     compile 'com.beust:jcommander:1.+'
     compile 'com.google.code.gson:gson:2.+'
-    compile 'com.google.guava:guava:21.0'
     compile 'commons-collections:commons-collections:3+'
     compile 'commons-validator:commons-validator:1.4.0'
     compile 'org.aeonbits.owner:owner:1+'
     compile 'org.apache.logging.log4j:log4j-api:2+'
     compile 'org.apache.logging.log4j:log4j-core:2+'
-    compile "org.projectlombok:lombok:1.16.16"
+    compile 'com.google.guava:guava:20.0'
+    compile 'org.reflections:reflections:0.9.10'
+    compile 'org.projectlombok:lombok:1.16.16'
+    compile 'org.apache.commons:commons-lang3:3.6'
+    compile 'io.jenetics:jenetics:3.9.0'
+    compile 'io.vavr:vavr:0.9.0'
 
+    compile "com.google.inject:guice:4.1.0"
 
+    compile group: 'com.github.nifty-gui', name: 'nifty', version: '1.4.2'
+    compile group: 'com.github.nifty-gui', name: 'nifty-slick2d-renderer', version: '1.4.2'
+    compile group: 'com.github.nifty-gui', name: 'nifty-style-black', version: '1.4.2'
+    compile group: 'com.github.nifty-gui', name: 'nifty-examples', version: '1.4.2'
+    
     testCompile 'junit:junit:4.+'
-
-    cucumberRuntime 'info.cukes:cucumber-java:1.2.3'
-}
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'HGData CLI Application', 'Implementation-Version': project.version
-    }
 }
 
 shadowJar {
-    manifest { attributes 'Main-Class': 'com.hgdata.camposSort.Main' }
+    manifest { attributes 'Main-Class': 'com.waffel.evolution.Main' }
     classifier = ''
-}
-
-testSets {
-    integrationTest
-}
-
-dependencies {
-    integrationTestRuntime sourceSets.integrationTest.output
-}
-
-repositories {
-    jcenter()
 }

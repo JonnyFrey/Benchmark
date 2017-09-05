@@ -39,3 +39,5 @@ hs_err_pid*
 
 # cobertura stuff
 target/
+
+classes/
