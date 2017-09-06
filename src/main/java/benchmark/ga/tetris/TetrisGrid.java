@@ -1,9 +1,12 @@
 package benchmark.ga.tetris;
 
+import benchmark.ga.tetris.neat.network.Pixel;
 import com.google.common.collect.Range;
 import io.vavr.collection.Iterator;
+import io.vavr.collection.Stream;
 import lombok.Getter;
 import org.jenetics.internal.math.random;
+import org.jenetics.util.RandomRegistry;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -29,6 +32,10 @@ public class TetrisGrid {
     private long score = 0;
 
     private long pieces = 0;
+
+    public TetrisGrid() {
+        this(RandomRegistry.getRandom());
+    }
 
     public TetrisGrid(final Random random) {
         this(TetrisLoader.getInstance(), random);
@@ -229,12 +236,13 @@ public class TetrisGrid {
         return score + (pieces * 100);
     }
 
-    public Iterator<Double> getGridAsIterator() {
+    public Iterator<Pixel> getGridAsIterator() {
         return Iterator.of(this.grid)
                 .map(Iterator::ofAll)
                 .flatMap(Iterator::iterator)
-                .map(Integer::doubleValue)
-                .map(value -> value == 0 ? 0 : (value)/this.tetrisLoader.getNumPieces());
+                .zipWithIndex()
+                .map(pair -> Stream.range(0, this.tetrisLoader.getNumPieces()).map(pixColor -> new Pixel(pair._2 / this.maxRows, pair._2 % 2, pair._1, pair._1 == pixColor)))
+                .flatMap(Stream::iterator);
     }
 
 }

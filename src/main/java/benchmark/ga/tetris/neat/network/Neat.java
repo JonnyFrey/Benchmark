@@ -13,11 +13,11 @@ import org.newdawn.slick.util.Log;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.LongSummaryStatistics;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static benchmark.ga.tetris.TetrisScreen.setupProperties;
+
 
 /**
  * Created by Jonny on 9/3/17.
@@ -29,6 +29,7 @@ public class Neat {
     private final Map<Neuron, Consumer<TetrisGrid>> actionMapper;
 
     public Neat() {
+        final TetrisGrid grid = new TetrisGrid();
         this.neuronTracker = new NeuronTracker();
         final Iterator<Consumer<TetrisGrid>> possibleActions =
                 Iterator.of(
@@ -41,16 +42,17 @@ public class Neat {
                 action -> this.neuronTracker.createNewBlankInstance(),
                 Function.identity()
         );
-        this.inputNeurons = Stream.range(0, TetrisGrid.DEFAULT_ROWS * TetrisGrid.DEFAULT_COLS)
+
+        this.inputNeurons = Stream.range(0, grid.getGridAsIterator().size())
                 .map(i -> this.neuronTracker.createNewBlankInstance())
                 .toSet();
     }
 
-    public static void main(final String... args) throws SlickException, IOException, InterruptedException {
+    public static void main(final String... args) throws SlickException {
         Log.setVerbose(false);
         setupProperties();
         final Neat neat = new Neat();
-        final Network network = neat.generateBestNetwork(Integer.MAX_VALUE, 100, Duration.ofMinutes(40));
+        final Network network = neat.generateBestNetwork(Integer.MAX_VALUE, 50, Duration.ofMinutes(15));
         final TetrisScreen screen = new TetrisScreen(network);
         System.out.println("Your network is ready!");
         screen.start();
@@ -63,7 +65,8 @@ public class Neat {
                 this.neuronTracker,
                 this.inputNeurons.toSortedSet(),
                 this.actionMapper,
-                new NeatStatistics(generationLimit, LocalTime.now().plus(timeLimit)));
+                new NeatStatistics(generationLimit, LocalTime.now().plus(timeLimit), -1)
+        );
 
         LocalTime start = LocalTime.now();
 

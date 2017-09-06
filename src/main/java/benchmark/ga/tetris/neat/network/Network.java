@@ -1,6 +1,7 @@
 package benchmark.ga.tetris.neat.network;
 
 import benchmark.ga.tetris.TetrisGrid;
+import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
@@ -76,8 +77,9 @@ public class Network implements Comparable<Network> {
                         .zipAll(
                                 grid.getGridAsIterator(),
                                 new Neuron(-1),
-                                0d
-                        ).toMap(Tuple2::_1, Tuple2::_2)
+                                new Pixel(-1, -1, -1, false)
+                        ).map(pair -> Tuple.of(pair._1, pair._2.isFull() ? 1.0D : 0))
+                        .toMap(Tuple2::_1, Tuple2::_2)
         ).mapValues(value -> value > 0.5)
                 .filter((neuron, apply) -> apply)
                 .map(Tuple2::_1)
@@ -126,7 +128,7 @@ public class Network implements Comparable<Network> {
         return newInfo.put(neuron.getId(), 1 / (1 + Math.pow(Math.E, -sum)));
     }
 
-    public Network mutateNeuron() {
+    public Network mutateNeuronWeight() {
         final List<Neuron> allOutputNeurons = this.hiddenNeurons.toList().shuffle();
         if (!allOutputNeurons.isEmpty()) {
             final Neuron oldNeuron = allOutputNeurons.get();
@@ -169,6 +171,24 @@ public class Network implements Comparable<Network> {
                     }
                 }
             }
+        }
+        return this;
+    }
+
+    public Network mutateDisableConnection() {
+        final List<Connection> shuffledConnections = this.connections.toList().shuffle();
+        if (!shuffledConnections.isEmpty()) {
+            final Connection connectionToDisable = shuffledConnections.get();
+            return new Network(
+                    this.neuronTracker,
+                    this.inputNeurons,
+                    this.hiddenNeurons,
+                    this.outputNeurons,
+                    this.actionMapper,
+                    this.connections.remove(connectionToDisable)
+                            .add(connectionToDisable.enable(false)),
+                    this.seed
+            );
         }
         return this;
     }
@@ -222,17 +242,21 @@ public class Network implements Comparable<Network> {
         );
     }
 
+    public Network forceMutate() {
+        final Random rand = RandomRegistry.getRandom();
+        float mutation = random.nextFloat(rand, 0, 1);
+        if (mutation < 0.33) {
+            return this.mutateNeuronWeight();
+        } else if (mutation < .66) {
+            return this.mutateNewNeuron();
+        }
+        return this.mutateNewConnection();
+    }
 
     public Network mutate() {
         final Random rand = RandomRegistry.getRandom();
-        if (random.nextFloat(rand, 0, 1) < 0.1) {
-            float mutation = random.nextFloat(rand, 0, 1);
-            if (mutation < 0.33) {
-                return this.mutateNeuron();
-            } else if (mutation < .66) {
-                return this.mutateNewNeuron();
-            }
-            return this.mutateNewConnection();
+        if (random.nextFloat(rand, 0, 1) < 0.15) {
+            return this.forceMutate();
         }
         return this;
     }

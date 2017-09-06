@@ -16,8 +16,10 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
+
 
 /**
  * Created by Jonny on 9/3/17.
@@ -38,15 +40,25 @@ public class Population {
             final NeuronTracker neuronTracker,
             final Set<Neuron> inputNeurons,
             final Map<Neuron, Consumer<TetrisGrid>> actionMapper,
-            final NeatStatistics statistics) {
+            final NeatStatistics statistics
+    ) {
         this.size = size;
         this.neuronTracker = neuronTracker;
         this.inputNeurons = inputNeurons;
         this.actionMapper = actionMapper;
 
-        this.population = Stream.range(0, size)
+        Stream<Future<Network>> networks = Stream.range(0, size)
                 .map(i -> new Network(this.neuronTracker, this.inputNeurons, this.actionMapper))
-                .map(Network::mutateNewConnection)
+                .map(network -> Future.successful(ForkJoinPool.commonPool(), network));
+        for (int i = 0; i < 45; i++) {
+            networks = networks.map(network -> network.map(Network::mutateNewConnection));
+        }
+        for (int i = 0; i < 10; i++) {
+            networks = networks.map(network -> network.map(Network::forceMutate));
+        }
+
+        this.population = Future.sequence(networks)
+                .get()
                 .map(network -> Tuple.of(0L, network))
                 .toList();
         this.statistics = statistics;
@@ -58,7 +70,8 @@ public class Population {
             final NeuronTracker neuronTracker,
             final Set<Neuron> inputNeurons,
             final Map<Neuron, Consumer<TetrisGrid>> actionMapper,
-            final NeatStatistics statistics) {
+            final NeatStatistics statistics
+    ) {
         this.population = population;
         this.size = size;
         this.neuronTracker = neuronTracker;
@@ -79,7 +92,7 @@ public class Population {
                 this.neuronTracker,
                 this.inputNeurons,
                 this.actionMapper,
-                this.statistics.combine(newBlank)
+                this.statistics.combine(newBlank).window()
         );
     }
 
@@ -96,7 +109,7 @@ public class Population {
                 this.neuronTracker,
                 this.inputNeurons,
                 this.actionMapper,
-                this.statistics.combine(newBlank)
+                this.statistics.combine(newBlank).window()
         );
     }
 
